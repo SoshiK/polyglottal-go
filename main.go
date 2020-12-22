@@ -42,7 +42,8 @@ func main() {
 	if err != nil {
 		panic("Error loading .env file")
 	}
-
+	//環境変数からPORTを読み込む
+	port := os.Getenv("PORT")
 	//DBとの接続
 	url := os.Getenv("DATABASE_URL")
 	connection, err := pq.ParseURL(url)
@@ -106,5 +107,5 @@ func main() {
 		return c.String(http.StatusOK, "ok")
 	})
 	//port3000でサーバーをたてる
-	e.Logger.Fatal(e.Start(":3000"))
+	e.Logger.Fatal(e.Start(":" + port))
 }

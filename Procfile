@@ -1,1 +1,1 @@
-web: bin/polyglottal-go
+web: main
