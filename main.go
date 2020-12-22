@@ -63,8 +63,23 @@ func main() {
 	e.GET("/api/lists", func(c echo.Context) error {
 		users := []List{}
 		db.Find(&users)
-		res, _ := json.Marshal(users)
+		res, err := json.Marshal(users)
+		if err != nil {
+			panic("Error in GET/api/lists")
+		}
 		return c.JSONBlob(http.StatusOK, res)
+	})
+
+	//POST - /api/lists
+	e.POST("api/lists", func(c echo.Context) error {
+		req := new(List)
+		err := c.Bind(&req)
+		if err != nil {
+			panic("Error in POST/api.lists")
+		}
+		list := List{Title: req.Title, Description: req.Description}
+		db.Create(&list)
+		return c.String(http.StatusOK, "ok")
 	})
 
 	//GET - /api/items/:listId
@@ -72,8 +87,23 @@ func main() {
 		listId := c.Param("listId")
 		items := []Item{}
 		db.Where("list_id = ?", listId).Find(&items)
-		res, _ := json.Marshal(items)
+		res, err := json.Marshal(items)
+		if err != nil {
+			panic("Error in GET/api/items/:listId")
+		}
 		return c.JSONBlob(http.StatusOK, res)
+	})
+
+	//POST - /api/items
+	e.POST("/api/items", func(c echo.Context) error {
+		req := new(Item)
+		err := c.Bind(&req)
+		if err != nil {
+			panic("Error in POST/api/items")
+		}
+		item := Item{Title: req.Title, Description: req.Description, Url: req.Url, ListID: req.ListID}
+		db.Create(&item)
+		return c.String(http.StatusOK, "ok")
 	})
 	//port3000でサーバーをたてる
 	e.Logger.Fatal(e.Start(":3000"))
