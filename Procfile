@@ -1,1 +1,1 @@
-web: polyglottal-go
+web: bin/polyglottal-go
