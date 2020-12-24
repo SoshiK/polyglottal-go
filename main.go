@@ -34,7 +34,7 @@ func main() {
 	e := echo.New()
 
 	//ミドルウェア関数の登録
-	// e.Use(middleware.Logger())
+	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	//環境変数の読み込み
@@ -106,6 +106,18 @@ func main() {
 		db.Create(&item)
 		return c.String(http.StatusOK, "ok")
 	})
+
+	//DELETE - /api/items/:itemId
+	e.DELETE("/api/items", func(c echo.Context) error {
+		req := new(Item)
+		err := c.Bind(&req)
+		if err != nil {
+			panic("Error in DELETE /api/items")
+		}
+		db.Delete(&Item{}, req.ID)
+		return c.String(http.StatusOK, "ok")
+	})
+
 	//port3000でサーバーをたてる
 	e.Logger.Fatal(e.Start(":" + port))
 }
